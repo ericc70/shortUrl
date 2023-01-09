@@ -34,6 +34,7 @@ class UrlService{
         $url->setLink($link);
         $url->setCreatedAt(new \DateTime);
         $url->setUserId($user);
+       
         $this->em->persist($url);
         $this->em->flush();
 

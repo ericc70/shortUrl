@@ -1,7 +1,8 @@
+
 const form = document.querySelector('#shortenForm')
 const shortenCard = document.querySelector('#shortenCard')
 const inputUrl = document.querySelector('#url')
-const btnShortenBtn = document.querySelector('#shortenbtn')
+const btnShortenUrl = document.querySelector('#btnShortenUrl')
 
 const URL_SHORTEN = '/ajax/shorten'
 
@@ -12,6 +13,7 @@ const errorMessages = {
 
 
 form.addEventListener('submit', function(e) {
+   
     e.preventDefault();
 
     fetch(URL_SHORTEN, {
@@ -19,6 +21,7 @@ form.addEventListener('submit', function(e) {
         body: new FormData(e.target)
     })
         .then(response => response.json())
+        // .then ( rep => console.log(rep));
         .then(handleData);
 });
 

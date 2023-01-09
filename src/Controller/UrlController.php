@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ * @method User getUser()
+ */
 class UrlController extends AbstractController
 {
     #[Route('/url', name: 'app_url')]
@@ -35,7 +38,7 @@ class UrlController extends AbstractController
     #[Route('/ajax/shorten', name: 'url_add')]
     public function add(Request $request, UrlService $urlService) : Response
     {
-      
+
         $inputUrl= $request->request->get('url');
 
         if(!$inputUrl){
@@ -62,6 +65,22 @@ class UrlController extends AbstractController
         ]);
   
        
+    }
+
+
+    #[Route('/user/links', name: 'url_user_link')]
+    public function list ( ) :Response
+    {
+        $user = $this->getUser();
+
+        if (!$user || $user->getUrls()->count() === 0) {
+            return $this->redirectToRoute('app_home');
+        }
+
+        return $this->render('url/list.html.twig', [
+            'urls'  => $user->getUrls()
+        ]);
+
     }
 
 
