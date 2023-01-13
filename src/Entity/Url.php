@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UrlRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,6 +33,14 @@ class Url
 
     #[ORM\ManyToOne(inversedBy: 'urls')]
     private ?User $userId = null;
+
+    #[ORM\OneToMany(mappedBy: 'url', targetEntity: UrlStatistic::class)]
+    private Collection $urlStatistics;
+
+    public function __construct()
+    {
+        $this->urlStatistics = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -107,5 +117,46 @@ class Url
         $this->userId = $userId;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, UrlStatistic>
+     */
+    public function getUrlStatistics(): Collection
+    {
+        return $this->urlStatistics;
+    }
+
+    public function addUrlStatistic(UrlStatistic $urlStatistic): self
+    {
+        if (!$this->urlStatistics->contains($urlStatistic)) {
+            $this->urlStatistics->add($urlStatistic);
+            $urlStatistic->setUrl($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUrlStatistic(UrlStatistic $urlStatistic): self
+    {
+        if ($this->urlStatistics->removeElement($urlStatistic)) {
+            // set the owning side to null (unless already changed)
+            if ($urlStatistic->getUrl() === $this) {
+                $urlStatistic->setUrl(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAllClicks(): int
+    {
+
+        $clicks = 0;
+        foreach ($this->urlStatistics as $statistic)
+        {
+            $clicks += $statistic->getClicks();
+        }
+        return $clicks;
     }
 }
