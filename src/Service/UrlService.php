@@ -30,7 +30,7 @@ class UrlService{
 
         $url->setLongUrl($inputUrl);
         $url->setDomain($domain);
-        $url->setHash( $this->generateHash() );
+        $url->setHash( $hash );
         $url->setLink($link);
         $url->setCreatedAt(new \DateTime);
         $url->setUserId($user);

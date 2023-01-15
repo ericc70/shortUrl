@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Service\UrlService;
 use App\Repository\UrlRepository;
+use App\Service\UrlStatisticService;
+use App\Service\UrlStatisticServices;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,13 +25,22 @@ class UrlController extends AbstractController
     }
 
     #[Route('/{hash}', name: 'url_view')]
-    public function view(string $hash, UrlRepository $urlRepo ) :Response
+    public function view(string $hash, UrlRepository $urlRepo , UrlStatisticServices $urlStatisticService ) :Response
     {
+       
         $url = $urlRepo->findOneByHash($hash);
  
        if(!$url){
         return $this->redirectToRoute('app_home');
        }
+
+       if(!$url->getUserId()){
+        return $this->redirect($url->getLongUrl());
+       }
+
+
+       $urlStatistic = $urlStatisticService->findOneByUrlAndDate($url, new \DateTime);
+       $urlStatisticService->incrementUrlStatistic($urlStatistic);
 
        return $this->redirect($url->getLongUrl());
 

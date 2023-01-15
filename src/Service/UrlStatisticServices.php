@@ -14,7 +14,7 @@ class UrlStatisticServices
     private UrlStatisticRepository $urlStatisticRepo;
   
 
-    public function __construct(EntityManagerInterface $em, UrlStatisticRepository $urlStatisticRepo, ChartBuilderInterface $chartBuilder)
+    public function __construct(EntityManagerInterface $em, UrlStatisticRepository $urlStatisticRepo)
     {
         $this->em = $em;
         $this->urlStatisticRepo = $urlStatisticRepo;
