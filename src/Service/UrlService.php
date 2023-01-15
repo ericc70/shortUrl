@@ -14,14 +14,17 @@ class UrlService{
     private EntityManagerInterface $em;
     private Security $security;
 
-    public function __construct(EntityManagerInterface $em, Security $security){
+    public function __construct(EntityManagerInterface $em,,UrlRepository $urlRepo ,Security $security){
         $this->em = $em;
         $this->security = $security;
+        $this->urlRepo = $urlRepo;
+
     }
 
     public function addUrl(string $inputUrl, string $domain )
     {
         $url = new Url();
+      
         $user = $this->security->getUser();
 
 
@@ -61,4 +64,23 @@ class UrlService{
         return substr(md5(uniqid(mt_rand(), true)), $offset, $length);
     }
 
+    public function deleteUrl(string $hash) :Response
+    {
+        $url = $this->urlRepo->findOneBy(['hash' => $hash]);
+
+        if (!$url) {
+            return new JsonResponse([
+                'statusCode' => 'URL_NOT_FOUND',
+                'statusText' => "Le lien n'a pas été trouvé !"
+            ]);
+        }
+
+        $this->em->remove($url);
+        $this->em->flush();
+
+        return new JsonResponse([
+            'statusCode' => 'DELETE_SUCCESSFUL',
+            'statusText' => 'Le lien a bien été supprimé !'
+        ]);
+    }
 }

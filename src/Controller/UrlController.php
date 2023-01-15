@@ -94,6 +94,11 @@ class UrlController extends AbstractController
 
     }
 
+    #[Route('/ajax/delete', name: 'url_delete')]
+    public function delete(string $hash, UrlService $urlService){
+        return $urlService->deleteUrl($hash);
+
+    }
 
 
 }
